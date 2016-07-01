@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'cuentas.apps.CuentasConfig',
+    'home.apps.HomeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,3 +127,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('ITK_EMAIL_USERNAME')
 EMAIL_HOST_PASSWORD = os.getenv('ITK_EMAIL_PASSWORD')
 EMAIL_PORT = 587
+
+LOGIN_REDIRECT_URL = 'home'
