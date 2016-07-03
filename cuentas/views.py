@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
-from cuentas.forms import RegistrationForm, ItkAuthenticationForm
+from cuentas.forms import RegistrationForm
 from cuentas.models import Profile
 import hashlib
 import uuid
