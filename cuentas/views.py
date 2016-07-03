@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from cuentas.forms import RegistrationForm
+from cuentas.forms import RegistrationForm, ItkAuthenticationForm
 from cuentas.models import Profile
 import hashlib
 import uuid
@@ -9,7 +11,7 @@ from django.utils import timezone
 
 def register(request):
     if request.user.is_authenticated():
-        return redirect('/')
+        return redirect('home')
     registration_form = RegistrationForm()
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -22,7 +24,8 @@ def register(request):
             salt = uuid.uuid4().hex.encode('utf-8')
             usernamesalt = datas['username'].encode('utf-8')
 
-            datas['activation_key'] = hashlib.sha1(salt+usernamesalt).hexdigest()
+            datas['activation_key'] = hashlib.sha1(salt +
+                                                   usernamesalt).hexdigest()
 
             datas['email_path'] = "/ActivationEmail.txt"
             datas['email_subject'] = "Activation de su cuenta en 192.168.1.130"
@@ -46,7 +49,7 @@ def activation(request, key):
     profil = get_object_or_404(Profile, activation_key=key)
     if profil.user.is_active is False:
         if timezone.now() > profil.key_expires:
-            activation_expired is True  # Display : offer to user to have another activation link (a link in template sending to the view new_activation_link)
+            activation_expired is True
             id_user = profil.user.id
         else:  # Activation successful
             profil.user.is_active = True
@@ -57,7 +60,7 @@ def activation(request, key):
         already_active = True  # Display : error message
     return render(request, 'cuentas/activacion.html', locals())
 
-
+# NO USO ESTA function
 def new_activation_link(request, user_id):
     form = RegistrationForm()
     datas = {}
@@ -84,18 +87,23 @@ def new_activation_link(request, user_id):
 
     return redirect('/')
 
-
+# NO USO ESTA function
 def custom_login(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            # Redirect to a success page.
+    form = ItkAuthenticationForm()
+    if request.method == 'POST':
+        form = ItkAuthenticationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    redirect('home')
+                else:
+                    # Return a 'disabled account' error message
+                    ...
         else:
-            # Return a 'disabled account' error message
+            # Return an 'invalid login' error message.
             ...
-    else:
-        # Return an 'invalid login' error message.
-        ...
