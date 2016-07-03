@@ -52,7 +52,8 @@ class AuthTest(TestCase):
         self.test_registro()
         p = Profile.objects.get(user_id=1)
         response = self.client.get(
-                   reverse('cuentas:activar',kwargs={'key': p.activation_key}))
+                   reverse('cuentas:activar',
+                           kwargs={'key': p.activation_key}))
         form_data = {'username': 'prueba', 'password': 'peloto'}
         response = self.client.post(reverse('cuentas:login'), form_data)
         # self.assertEqual(response.status_code, 200)
