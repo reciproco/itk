@@ -86,24 +86,3 @@ def new_activation_link(request, user_id):
         request.session['new_link'] = True  # Display : new link send
 
     return redirect('/')
-
-# NO USO ESTA function
-def custom_login(request):
-    form = ItkAuthenticationForm()
-    if request.method == 'POST':
-        form = ItkAuthenticationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    redirect('home')
-                else:
-                    # Return a 'disabled account' error message
-                    ...
-        else:
-            # Return an 'invalid login' error message.
-            ...
