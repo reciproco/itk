@@ -51,6 +51,7 @@ def activation(request, key):
         already_active = True  # Display : error message
     return render(request, 'cuentas/activacion.html', locals())
 
+
 # Untested
 def new_activation_link(request, user_id):
 

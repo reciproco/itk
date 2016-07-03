@@ -37,6 +37,13 @@ class AuthTest(TestCase):
                                     self.form_data)
         self.assertRedirects(response, reverse('home'))
 
+    def test_resgitro_unavailable_username(self):
+        self.test_registro()
+        response = self.client.post(reverse('cuentas:registro'),
+                                    self.form_data)
+        self.assertContains(response, 'Nombre de usuario no disponible.')
+
+
     def test_login_without_activation(self):
         self.test_registro()
 

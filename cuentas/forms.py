@@ -32,6 +32,10 @@ class RegistrationForm(forms.Form):
         if password1 and password1 != password2:
             self.add_error('password2', "La contraseña no coincide")
 
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exists():
+            self.add_error('username', 'Nombre de usuario no disponible.')
+
         return self.cleaned_data
 
     # Override of save method for saving both User and Profil objects
