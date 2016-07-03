@@ -1,7 +1,6 @@
 from django.core.validators import validate_email, validate_slug
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
-from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from cuentas.models import Profile
 from datetime import datetime
@@ -36,34 +35,20 @@ class RegistrationForm(forms.Form):
         return self.cleaned_data
 
     # Override of save method for saving both User and Profil objects
-    def save(self, datas):
-        u = User.objects.create_user(datas['username'],
-                                     datas['email'],
-                                     datas['password1'])
+    def save(self, username, email, password, activation_key):
+        u = User.objects.create_user(username,
+                                     email,
+                                     password)
         u.is_active = False
         u.save()
         profile = Profile()
         profile.user = u
-        profile.activation_key = datas['activation_key']
+        profile.activation_key = activation_key
         profile.key_expires = datetime.strftime(datetime.now() +
                                                 timedelta(days=2),
                                                 "%Y-%m-%d %H:%M:%S")
         profile.save()
         return u
-
-    # Handling of activation email sending
-    def sendEmail(self, datas):
-        link = "http://localhost:9000/cuentas/activar/"+datas['activation_key']
-#        c=Context({'activation_link':link,'username':datas['username']})
-#        f = open(MEDIA_ROOT+datas['email_path'], 'r')
-#        t = Template(f.read())
-#        f.close()
-#        message=t.render(c)
-        # send_mail(datas['email_subject'], message,
-        # 'yourdomain <no-reply@yourdomain.com>',
-        # [datas['email']], fail_silently=False)
-        email = EmailMessage(datas['email_subject'], link, to=[datas['email']])
-        email.send()
 
 
 class ItkAuthenticationForm(AuthenticationForm):

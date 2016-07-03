@@ -3,9 +3,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from cuentas.forms import RegistrationForm
 from cuentas.models import Profile
-import hashlib
-import uuid
 from django.utils import timezone
+from cuentas.utils import generate_link, send_email
 
 
 def register(request):
@@ -15,24 +14,15 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            datas = {}
-            datas['username'] = form.cleaned_data['username']
-            datas['email'] = form.cleaned_data['email']
-            datas['password1'] = form.cleaned_data['password1']
+            activation_key = generate_link(form.cleaned_data['username'])
+            form.save(form.cleaned_data['username'],
+                      form.cleaned_data['email'],
+                      form.cleaned_data['password1'],
+                      activation_key)
 
-            salt = uuid.uuid4().hex.encode('utf-8')
-            usernamesalt = datas['username'].encode('utf-8')
-
-            datas['activation_key'] = hashlib.sha1(salt +
-                                                   usernamesalt).hexdigest()
-
-            datas['email_path'] = "/ActivationEmail.txt"
-            datas['email_subject'] = "Activation de su cuenta en 192.168.1.130"
-
-            form.sendEmail(datas)  # Send validation email
-            form.save(datas)  # Save the user and his profile
-
-            request.session['registered'] = True  # For display purposes
+            send_email(request, activation_key, form.cleaned_data['email'],
+                       'Enlace de activación de su cuenta en ' +
+                       request.get_host())
             return redirect('home')
         else:
             registration_form = form  # Display form with error messages
