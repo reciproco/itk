@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'UTC'
 
@@ -129,3 +129,5 @@ EMAIL_HOST_PASSWORD = os.getenv('ITK_EMAIL_PASSWORD')
 EMAIL_PORT = 587
 
 LOGIN_REDIRECT_URL = 'home'
+
+ADMINS = [('Reciprocidad', os.getenv('ITK_ADMIN_EMAIL'))]
