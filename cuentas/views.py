@@ -5,6 +5,8 @@ from cuentas.forms import RegistrationForm
 from cuentas.models import Profile
 from django.utils import timezone
 from cuentas.utils import generate_link, send_email
+from datetime import datetime
+from datetime import timedelta
 
 
 def register(request):
@@ -49,29 +51,20 @@ def activation(request, key):
         already_active = True  # Display : error message
     return render(request, 'cuentas/activacion.html', locals())
 
-# NO USO ESTA function
+# Untested
 def new_activation_link(request, user_id):
-    form = RegistrationForm()
-    datas = {}
-    user = User.objects.get(id=user_id)
-    if user is not None and not user.is_active:
-        datas['username'] = user.username
-        datas['email'] = user.email
-        datas['email_path'] = "/ResendEmail.txt"
-        datas['email_subject'] = "Nouveau lien d'activation yourdomain"
 
-        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-        usernamesalt = datas['username']
-        if isinstance(usernamesalt, unicode):
-            usernamesalt = usernamesalt.encode('utf8')
-        datas['activation_key'] = hashlib.sha1(salt+usernamesalt).hexdigest()
+    p = Profile.objects.get(user_id=user_id)
+    if p.user is not None and not p.user.is_active:
+        activation_key = generate_link(p.user.username)
+        # profil = Profil.objects.get(user=user)
+        p.activation_key = activation_key
+        p.key_expires = datetime.strftime(
+                              datetime.now() + timedelta(days=2),
+                              "%Y-%m-%d %H:%M:%S")
+        p.save()
+        send_email(request, activation_key, p.user.email,
+                   'NUEVO enlace de activación de su cuenta en ' +
+                   request.get_host())
 
-        profil = Profil.objects.get(user=user)
-        profil.activation_key = datas['activation_key']
-        profil.key_expires = datetime.datetime.strftime(datetime.datetime.now() + datetime.timedelta(days=2), "%Y-%m-%d %H:%M:%S")
-        profil.save()
-
-        form.sendEmail(datas)
-        request.session['new_link'] = True  # Display : new link send
-
-    return redirect('/')
+    return redirect('home')
