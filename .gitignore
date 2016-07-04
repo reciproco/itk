@@ -66,5 +66,11 @@ venv/
 #sqllite
 *.sqlite3
 
-
+.DS_Store
 *.swp
+
+# Private docs
+priv/
+
+# Confidetial configuration
+secrets.env

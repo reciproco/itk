@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
     url(r'^cuentas/', include('cuentas.urls')),
+    url(r'^interacciones/', include('interacciones.urls')),
 ]
