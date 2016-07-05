@@ -1,17 +1,33 @@
 from django.core.validators import validate_email, validate_slug
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
-from django.contrib.auth.models import User
-from cuentas.models import Profile
+from cuentas.models import Profile, MyUser
 from datetime import datetime
 from datetime import timedelta
 
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(label="", widget=forms.TextInput(
-               attrs={'placeholder': 'Nombre de usuario',
+    nombre = forms.CharField(label="", widget=forms.TextInput(
+               attrs={'placeholder': 'Nombre',
                       'class': 'form-control input-perso'}),
-               max_length=30, min_length=3, validators=[validate_slug])
+               max_length=30, min_length=1)
+    apellidos = forms.CharField(label="", widget=forms.TextInput(
+               attrs={'placeholder': 'Apellidos',
+                      'class': 'form-control input-perso'}),
+               max_length=30, min_length=1,)
+    provincia = forms.CharField(label="", widget=forms.TextInput(
+               attrs={'placeholder': 'Provincia',
+                      'class': 'form-control input-perso'}),
+               max_length=30, min_length=1)
+    localidad = forms.CharField(label="", widget=forms.TextInput(
+               attrs={'placeholder': 'Localidad',
+                      'class': 'form-control input-perso'}),
+               max_length=30, min_length=1)
+    centro_de_trabajo = forms.CharField(label="", widget=forms.TextInput(
+               attrs={'placeholder': 'Centro de trabajo',
+                      'class': 'form-control input-perso'}),
+               max_length=30, min_length=3)
+
     email = forms.EmailField(label="", widget=forms.EmailInput(
                attrs={'placeholder': 'Correo electronico',
                       'class': 'form-control input-perso'}),
@@ -32,17 +48,17 @@ class RegistrationForm(forms.Form):
         if password1 and password1 != password2:
             self.add_error('password2', "La contraseña no coincide")
 
-        username = self.cleaned_data['username']
-        if User.objects.filter(username=username).exists():
-            self.add_error('username', 'Nombre de usuario no disponible.')
+        email = self.cleaned_data.get('email')
+        if MyUser.objects.filter(email=email).exists():
+            self.add_error('email', 'Dirección de correo en uso.')
 
         return self.cleaned_data
 
     # Override of save method for saving both User and Profil objects
-    def save(self, username, email, password, activation_key):
-        u = User.objects.create_user(username,
-                                     email,
-                                     password)
+    def save(self, nombre, apellidos, localidad, provincia, centro_de_trabajo,
+             email, password, activation_key):
+        u = MyUser.objects.create_user(email, nombre, apellidos, provincia,
+                                       localidad, centro_de_trabajo, password)
         u.is_active = False
         u.save()
         profile = Profile()

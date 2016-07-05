@@ -16,8 +16,12 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            activation_key = generate_link(form.cleaned_data['username'])
-            form.save(form.cleaned_data['username'],
+            activation_key = generate_link(form.cleaned_data['email'])
+            form.save(form.cleaned_data['nombre'],
+                      form.cleaned_data['apellidos'],
+                      form.cleaned_data['localidad'],
+                      form.cleaned_data['provincia'],
+                      form.cleaned_data['centro_de_trabajo'],
                       form.cleaned_data['email'],
                       form.cleaned_data['password1'],
                       activation_key)

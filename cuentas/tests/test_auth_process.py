@@ -10,7 +10,11 @@ class AuthTest(TestCase):
     def setUp(self):
         # Every test needs a client.
         self.client = Client()
-        self.form_data = {'username': 'prueba',
+        self.form_data = {'nombre': 'prueba',
+                          'apellidos': 'prueba',
+                          'localidad': 'madir',
+                          'provincia': 'provincia',
+                          'centro_de_trabajo': 'prueba',
                           'email': 'reciprocidad@gmail.com',
                           'password1': 'peloto', 'password2': 'peloto'}
 
@@ -26,9 +30,13 @@ class AuthTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_registro_invalid_email(self):
-        form_data = {'username': 'prueba', 'email': 'reciprocidad_gmail.com',
+        form_data = {'nombre': 'prueba',
+                     'apellidos': 'prueba',
+                     'localidad': 'madir',
+                     'provincia': 'provincia',
+                     'centro_de_trabajo': 'prueba',
+                     'email': 'reciprocidad_gmail.com',
                      'password1': 'peloto', 'password2': 'peloto'}
-
         form = RegistrationForm(data=form_data)
         self.assertFalse(form.is_valid())
 
@@ -41,13 +49,14 @@ class AuthTest(TestCase):
         self.test_registro()
         response = self.client.post(reverse('cuentas:registro'),
                                     self.form_data)
-        self.assertContains(response, 'Nombre de usuario no disponible.')
-
+        # pdb.set_trace()
+        self.assertContains(response, 'de correo en uso.')
 
     def test_login_without_activation(self):
         self.test_registro()
 
-        form_data = {'username': 'prueba', 'password': 'peloto'}
+        form_data = {'username': 'reciprocidad@gmail.com',
+                     'password': 'peloto'}
         response = self.client.post(reverse('cuentas:login'), form_data)
         # self.assertEqual(response.status_code, 200)
 
@@ -61,7 +70,7 @@ class AuthTest(TestCase):
         response = self.client.get(
                    reverse('cuentas:activar',
                            kwargs={'key': p.activation_key}))
-        form_data = {'username': 'prueba', 'password': 'peloto'}
+        form_data = {'username': 'reciprocidad@gmail.com', 'password': 'peloto'}
         response = self.client.post(reverse('cuentas:login'), form_data)
         # self.assertEqual(response.status_code, 200)
         self.assertIn('_auth_user_id', self.client.session)
