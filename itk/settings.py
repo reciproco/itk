@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'cuentas.apps.CuentasConfig',
-    'home.apps.HomeConfig',
     'interacciones.apps.InteraccionesConfig',
     'django.contrib.admin',
     'django.contrib.auth',

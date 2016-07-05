@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    Seleccionados:
+    {% for itk in selected_itks %}
+       <ul>{{ itk.nombre }}</ul>
+    {% endfor %}
+    <br>
+    {% for farmaco in farmacos %}
+       <ul>{{ farmaco.nombre }} </ul>
+    {% endfor %}
+  </body>
+</html>

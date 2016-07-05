@@ -2,9 +2,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>HOME</title>
+    <title>interacciones</title>
   </head>
   <body>
+    INTERACCIONES ITC
+
+  <form method="post" action="{% url 'home' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="siguiente" />
+  </form>
     <a href="{% url 'cuentas:registro' %}">registro</a>
     <a href="{% url 'cuentas:login' %}">login</a>
     <a href="{% url 'cuentas:logout' %}">logout</a>
