@@ -70,7 +70,8 @@ class AuthTest(TestCase):
         response = self.client.get(
                    reverse('cuentas:activar',
                            kwargs={'key': p.activation_key}))
-        form_data = {'username': 'reciprocidad@gmail.com', 'password': 'peloto'}
+        form_data = {'username': 'reciprocidad@gmail.com',
+                     'password': 'peloto'}
         response = self.client.post(reverse('cuentas:login'), form_data)
         # self.assertEqual(response.status_code, 200)
         self.assertIn('_auth_user_id', self.client.session)
