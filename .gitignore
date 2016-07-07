@@ -72,5 +72,11 @@ venv/
 # Private docs
 priv/
 
+# Raw data
+*.csv
+*.raw
+*.uniq
+*.bak
+
 # Confidetial configuration
 secrets.env
