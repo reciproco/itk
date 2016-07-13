@@ -12,11 +12,11 @@ class Grupo(models.Model):
 
 class Farmaco(models.Model):
     nombre = models.CharField(max_length=128)
-    # grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
+    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
 
 
 class Rel_Itk_Far(models.Model):
-    itk = models.ForeignKey(Itk, on_delete=models.CASCADE, related_name='itks')
+    itk = models.ForeignKey(Itk, on_delete=models.CASCADE, related_name='itk')
     farmaco = models.ForeignKey(Farmaco, on_delete=models.CASCADE,
                                 related_name='farmacos')
     clasificacion = models.CharField(max_length=128)

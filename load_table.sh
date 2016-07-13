@@ -3,5 +3,5 @@ sqlite3 ./db.sqlite3 <<!
 .headers on
 .mode csv
 .separator "|"
-.import ./priv/$1.csv interacciones_$1
+.import ./etl/$1.csv interacciones_$1
 !
